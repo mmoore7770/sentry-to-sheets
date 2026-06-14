@@ -1,5 +1,5 @@
 /**
- * IssueSheet — throwaway demo prototype (NOT the product).
+ * IssueSheet — export Sentry into Google Sheets, on a schedule.
  *
  * Pulls a Sentry org's Issues, Releases, and daily error stats into this
  * spreadsheet via the documented Sentry REST API (/api/0/), which is
@@ -21,7 +21,7 @@
  */
 
 var SENTRY_API_BASE = 'https://sentry.io/api/0/';
-var MAX_ROWS = 200; // demo cap — keeps the sync fast for the GIF
+var MAX_ROWS = 200; // cap on rows pulled per tab — keeps a sync within Apps Script quotas
 
 // ---------------------------------------------------------------- menu --
 
@@ -30,7 +30,7 @@ function onOpen() {
     .createMenu('IssueSheet')
     .addItem('Sync now', 'syncNow')
     .addSeparator()
-    .addItem('Reset tabs (for demo recording)', 'resetTabs')
+    .addItem('Clear all tabs', 'resetTabs')
     .addItem('Check settings', 'checkSettings')
     .addToUi();
 }
@@ -443,7 +443,7 @@ function tabData_(ss, name) {
 
 // ------------------------------------------------------------- helpers --
 
-/** Clears the tabs (and dashboard charts) so the demo GIF starts empty. */
+/** Clears all data tabs and dashboard charts (e.g. to start fresh). */
 function resetTabs() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   ['Dashboard', 'Issues', 'Releases', 'Stats'].forEach(function (name) {
@@ -452,7 +452,7 @@ function resetTabs() {
     sheet.clear();
     sheet.getCharts().forEach(function (c) { sheet.removeChart(c); });
   });
-  ss.toast('Tabs cleared — ready to record.', 'IssueSheet', 5);
+  ss.toast('All tabs cleared.', 'IssueSheet', 5);
 }
 
 /** Shows which Script Properties are set (token masked). */
